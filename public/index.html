@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Consentidos - Guardería</title>
+    <!-- Incluye Tailwind CSS para un diseño moderno y responsive -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configuración personalizada de Tailwind para los colores de la guardería -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6', // Un tono de azul
+                        secondary: '#FACC15', // Un tono de amarillo
+                        accentRed: '#EF4444', // Un tono de rojo
+                        accentGreen: '#22C55E', // Un tono de verde
+                        darkBlue: '#1E40AF',
+                        lightYellow: '#FEF3C7',
+                        lightBlue: '#DBEAFE',
+                        lightRed: '#FEE2E2',
+                        lightGreen: '#D1FAE5',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'], // Fuente Inter para la página
+                    },
+                }
+            }
+        }
+    </script>
+    <!-- Incluye Font Awesome para iconos de redes sociales y servicios -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Estilos personalizados adicionales */
+        html {
+            scroll-behavior: smooth; /* Desplazamiento suave al hacer clic en los enlaces de anclaje */
+            overflow-x: hidden; /* Evita el scroll horizontal */
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa; /* Color de fondo general */
+            color: #333;
+            overflow-x: hidden; /* También evita el scroll horizontal en el body */
+        }
+        .section-padding {
+            padding: 4rem 1rem; /* Espaciado uniforme para todas las secciones */
+        }
+        @media (min-width: 768px) {
+            .section-padding {
+                padding: 6rem 2rem;
+            }
+        }
+        .navbar-fixed {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000; /* Asegura que la barra de navegación esté siempre encima */
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); /* Sombra para resaltar la barra */
+        }
+        /* Estilo para el hover de los enlaces del menú */
+        .nav-link:hover {
+            color: var(--secondary); /* Color amarillo al pasar el ratón */
+            transform: translateY(-2px); /* Pequeño efecto de elevación */
+        }
+        /* Estilos para el video de YouTube */
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* Relación de aspecto 16:9 (altura/ancho) */
+            height: 0;
+            overflow: hidden;
+            border-radius: 0.75rem; /* Bordes redondeados */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15); /* Sombra para el video */
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+        /* Estilos para el rango (slider) de la calculadora */
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #3B82F6; /* Color del "pulgar" del slider */
+            cursor: pointer;
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #3B82F6;
+            cursor: pointer;
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        /* Ocultar las flechas de número en los inputs */
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+        /* Estilos para los mensajes de confirmación */
+        .message-box {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-weight: bold;
+            z-index: 1001;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            animation: fadein 0.5s, fadeout 0.5s 2.5s forwards;
+        }
+
+        .message-box.success {
+            background-color: #22C55E; /* accentGreen */
+            color: white;
+        }
+
+        .message-box.error {
+            background-color: #EF4444; /* accentRed */
+            color: white;
+        }
+
+        @keyframes fadein {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeout {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-20px); }
+        }
+
+        /* Estilos para el menú lateral (off-canvas) */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -300px; /* Oculto inicialmente fuera de la pantalla */
+            width: 300px;
+            height: 100%;
+            background-color: #fff;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+            z-index: 1002;
+            transition: left 0.3s ease-in-out;
+            padding-top: 5rem; /* Espacio para que no choque con la barra de navegación */
+            overflow-y: auto; /* Permite scroll si el contenido es largo */
+        }
+
+        .sidebar.open {
+            left: 0; /* Visible en pantalla */
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1001;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        }
+
+        .sidebar-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Superposición para el menú lateral -->
+    <div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+    <!-- Menú Lateral (Off-canvas) -->
+    <aside id="sidebar" class="sidebar md:hidden">
+        <div class="p-6 text-center"> <!-- Centrado el contenido del sidebar -->
+            <!-- Logo para el menú lateral -->
+            <img src="https://i.imgur.com/8bwVSqs.png" alt="Logo Mis Consentidos" class="mx-auto mb-6 rounded-full h-20 w-20 object-contain shadow-md"> <!-- h-20 w-20 para más grande, mx-auto para centrar -->
+            <h3 class="text-3xl font-bold text-darkBlue mb-8">Navegación</h3>
+            <div class="flex flex-col space-y-4 text-xl">
+                <a href="#inicio" class="sidebar-link text-gray-700 hover:text-primary transition duration-200 py-2">Inicio</a>
+                <a href="#quienes-somos" class="sidebar-link text-gray-700 hover:text-primary transition duration-200 py-2">Quiénes Somos</a>
+                <a href="#servicios" class="sidebar-link text-gray-700 hover:text-primary transition duration-200 py-2">Servicios</a>
+                <a href="#galeria" class="sidebar-link text-gray-700 hover:text-primary transition duration-200 py-2">Galería</a>
+                <a href="#precios" class="sidebar-link text-gray-700 hover:text-primary transition duration-200 py-2">Precios</a>
+                <a href="#recomendaciones" class="sidebar-link text-gray-700 hover:text-primary transition duration-200 py-2">Recomendaciones</a>
+                <a href="#contacto" class="sidebar-link text-gray-700 hover:text-primary transition duration-200 py-2">Contacto</a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Barra de Navegación Fija -->
+    <nav class="navbar-fixed bg-white p-4 transition duration-300 ease-in-out">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold text-primary flex items-center">
+                <!-- Tu logo de Mis Consentidos desde Imgur -->
+                <img id="logo-img" src="https://i.imgur.com/8bwVSqs.png" onerror="console.error('Error al cargar la imagen. URL: ', this.src); this.onerror=null;this.src='https://placehold.co/40x40/3B82F6/FFFFFF?text=MC';" alt="Logo Mis Consentidos" class="mr-2 rounded-full h-10 w-10 object-contain">
+                Mis Consentidos
+            </a>
+            
+            <!-- Botón de Hamburguesa (visible solo en móviles) -->
+            <button id="hamburger-button" class="md:hidden text-gray-700 text-3xl focus:outline-none">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <!-- Menú de Navegación (visible en desktop, oculto en móviles) -->
+            <div class="hidden md:flex space-x-8 text-lg">
+                <a href="#inicio" class="nav-link text-gray-700 hover:text-secondary transition transform duration-200">Inicio</a>
+                <a href="#quienes-somos" class="nav-link text-gray-700 hover:text-secondary transition transform duration-200">Quiénes Somos</a>
+                <a href="#servicios" class="nav-link text-gray-700 hover:text-secondary transition transform duration-200">Servicios</a>
+                <a href="#galeria" class="nav-link text-gray-700 hover:text-secondary transition transform duration-200">Galería</a>
+                <a href="#precios" class="nav-link text-gray-700 hover:text-secondary transition transform duration-200">Precios</a>
+                <a href="#recomendaciones" class="nav-link text-gray-700 hover:text-secondary transition transform duration-200">Recomendaciones</a>
+                <a href="#contacto" class="nav-link text-gray-700 hover:text-secondary transition transform duration-200">Contacto</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sección de Inicio (Hero) -->
+    <section id="inicio" class="section-padding bg-gradient-to-r from-lightBlue to-primary text-white text-center pt-32 md:pt-40 pb-20">
+        <div class="container mx-auto px-4">
+            <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-4">
+                Mis Consentidos: Donde la <span class="text-secondary">Felicidad</span> y el <span class="text-secondary">Aprendizaje</span> se Encuentran
+            </h1>
+            <p class="text-xl md:text-2xl mb-8 opacity-90">
+                Un espacio seguro, divertido y lleno de amor para los más pequeños.
+            </p>
+            <a href="#servicios" class="inline-block bg-secondary hover:bg-yellow-400 text-darkBlue font-bold py-3 px-8 rounded-full text-lg md:text-xl transition transform duration-300 hover:scale-105 shadow-lg">
+                ¡Conoce Nuestros Servicios!
+            </a>
+
+            <!-- Video Incrustado de YouTube -->
+            <div class="mt-16 max-w-4xl mx-auto video-container">
+                <iframe
+                    src="https://www.youtube.com/embed/bLMG0yrBMIc?controls=0&modestbranding=1&rel=0"
+                    title="Video de Presentación de Mis Consentidos"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen>
+                </iframe>
+                <!-- NOTA IMPORTANTE: Usa el formato 'embed/' para los videos de YouTube.
+                     No uses enlaces de compartir o la URL principal de YouTube, ya que YouTube bloqueará la conexión
+                     debido a la política X-Frame-Options. -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Quiénes Somos -->
+    <section id="quienes-somos" class="section-padding bg-lightYellow">
+        <div class="container mx-auto flex flex-col md:flex-row items-center gap-10 px-4">
+            <div class="md:w-1/2">
+                <!-- Se agregó un placeholder para asegurar la visibilidad -->
+                <img src="https://placehold.co/600x400/FACC15/darkBlue/FFFFFF?text=Equipo+Mis+Consentidos" alt="Equipo de Mis Consentidos" class="rounded-lg shadow-xl w-full h-auto object-cover">
+            </div>
+            <div class="md:w-1/2 text-center md:text-left">
+                <h2 class="text-4xl md:text-5xl font-extrabold text-darkBlue mb-6">
+                    Quiénes Somos
+                </h2>
+                <p class="text-lg leading-relaxed text-gray-700 mb-4">
+                    En "Mis Consentidos", nos dedicamos a crear un ambiente donde cada niño se sienta amado, valorado y motivado a explorar el mundo que le rodea. Contamos con un equipo de profesionales apasionados y altamente capacitados, comprometidos con el desarrollo integral de tus hijos.
+                </p>
+                <p class="text-lg leading-relaxed text-gray-700">
+                    Nuestra misión es ofrecer un espacio seguro y estimulante que fomente la creatividad, la curiosidad y el desarrollo de habilidades sociales, preparando a los pequeños para un futuro brillante.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de Servicios -->
+    <section id="servicios" class="section-padding bg-gray-100">
+        <div class="container mx-auto text-center px-4">
+            <h2 class="text-4xl md:text-5xl font-extrabold text-darkBlue mb-12">
+                Nuestros Servicios
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <!-- Servicio: Cuidado Integral -->
+                <div class="bg-white p-8 rounded-lg shadow-lg hover:shadow-2xl transition duration-300 transform hover:-translate-y-2 border-b-4 border-primary">
+                    <div class="text-primary text-6xl mb-6">
+                        <i class="fas fa-heartbeat"></i> <!-- Icono de cuidado integral -->
+                    </div>
+                    <h3 class="text-2xl font-bold text-darkBlue mb-4">Cuidado Integral</h3>
+                    <p class="text-lg text-gray-700 leading-relaxed">
+                        Ofrecemos un ambiente seguro y amoroso, donde cada niño recibe atención personalizada para su desarrollo emocional, físico y social. ¡Como en casa!
+                    </p>
+                </div>
+                <!-- Servicio: Acompañamiento Pedagógico -->
+                <div class="bg-white p-8 rounded-lg shadow-lg hover:shadow-2xl transition duration-300 transform hover:-translate-y-2 border-b-4 border-accentGreen">
+                    <div class="text-accentGreen text-6xl mb-6">
+                        <i class="fas fa-book-reader"></i> <!-- Icono de acompañamiento pedagógico -->
+                    </div>
+                    <h3 class="2xl font-bold text-darkBlue mb-4">Acompañamiento Pedagógico</h3>
+                    <p class="text-lg text-gray-700 leading-relaxed">
+                        A través de actividades lúdicas y programas educativos adaptados, estimulamos la curiosidad, la creatividad y el aprendizaje temprano de forma divertida.
+                    </p>
+                </div>
+                <!-- Servicio: Alimentación Balanceada -->
+                <div class="bg-white p-8 rounded-lg shadow-lg hover:shadow-2xl transition duration-300 transform hover:-translate-y-2 border-b-4 border-accentRed">
+                    <div class="text-accentRed text-6xl mb-6">
+                        <i class="fas fa-apple-alt"></i> <!-- Icono de alimentación -->
+                    </div>
+                    <h3 class="2xl font-bold text-darkBlue mb-4">Alimentación Balanceada</h3>
+                    <p class="text-lg text-gray-700 leading-relaxed">
+                        Menús nutritivos y deliciosos, diseñados por expertos en nutrición infantil, asegurando una alimentación sana y equilibrada para el crecimiento de tu hijo.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Galería de Fotos -->
+    <section id="galeria" class="section-padding bg-lightBlue">
+        <div class="container mx-auto text-center px-4">
+            <h2 class="text-4xl md:text-5xl font-extrabold text-darkBlue mb-12">
+                Momentos Mágicos
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Imágenes de la galería (placeholders corregidos) -->
+                <div class="overflow-hidden rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105">
+                    <img src="https://placehold.co/800x600/3B82F6/FFFFFF?text=Juegos" alt="Niños jugando en Mis Consentidos" class="w-full h-64 object-cover">
+                </div>
+                <div class="overflow-hidden rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105">
+                    <img src="https://placehold.co/800x600/FACC15/darkBlue/FFFFFF?text=Aprendizaje" alt="Actividades de aprendizaje" class="w-full h-64 object-cover">
+                </div>
+                <div class="overflow-hidden rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105">
+                    <img src="https://placehold.co/800x600/22C55E/FFFFFF?text=Comida" alt="Comida saludable" class="w-full h-64 object-cover">
+                </div>
+                <div class="overflow-hidden rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105">
+                    <img src="https://placehold.co/800x600/EF4444/FFFFFF?text=Descanso" alt="Hora de la siesta" class="w-full h-64 object-cover">
+                </div>
+                <div class="overflow-hidden rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105">
+                    <img src="https://placehold.co/800x600/1E40AF/FFFFFF?text=Creatividad" alt="Arte y creatividad" class="w-full h-64 object-cover">
+                </div>
+                <div class="overflow-hidden rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105">
+                    <img src="https://placehold.co/800x600/FACC15/darkBlue/FFFFFF?text=Amigos" alt="Niños haciendo amigos" class="w-full h-64 object-cover">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de Precios (Calculadora) -->
+    <section id="precios" class="section-padding bg-gray-50">
+        <div class="container mx-auto text-center px-4">
+            <h2 class="text-4xl md:text-5xl font-extrabold text-darkBlue mb-12">
+                Calcula Tu Presupuesto
+            </h2>
+            <div class="bg-white p-8 md:p-12 rounded-lg shadow-xl max-w-2xl mx-auto border-t-8 border-primary">
+                <div class="space-y-6 text-left">
+                    <!-- Opciones de Cálculo de Pago -->
+                    <div class="mt-8">
+                        <h3 class="text-xl font-semibold text-gray-700 mb-4">Calcular Pago:</h3>
+                        <div class="flex flex-wrap gap-4 justify-center md:justify-start">
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="frecuenciaPago" value="diario" checked class="h-5 w-5 text-primary focus:ring-primary checked:bg-primary border-gray-300">
+                                <span class="ml-2 text-lg text-gray-700">Diario</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="frecuenciaPago" value="semanal" class="h-5 w-5 text-primary focus:ring-primary checked:bg-primary border-gray-300">
+                                <span class="ml-2 text-lg text-gray-700">Semanal</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="frecuenciaPago" value="quincenal" class="h-5 w-5 text-primary focus:ring-primary checked:bg-primary border-gray-300">
+                                <span class="ml-2 text-lg text-gray-700">Quincenal</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="frecuenciaPago" value="mensual" class="h-5 w-5 text-primary focus:ring-primary checked:bg-primary border-gray-300">
+                                <span class="ml-2 text-lg text-gray-700">Mensual</span>
+                            </label>
+                        </div>
+                    </div>
+                    <!-- Número de Horas -->
+                    <div>
+                        <label for="numHoras" class="block text-xl font-semibold text-gray-700 mb-2">Número de Horas al Día:</label>
+                        <!-- Rango de horas extendido de 4 a 12 horas -->
+                        <input type="range" id="numHoras" min="4" max="12" value="4" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                        <div class="flex justify-between text-sm text-gray-600 mt-1">
+                            <span>4 horas</span>
+                            <span id="displayHoras" class="font-bold text-primary">4 horas</span>
+                            <span>12 horas</span>
+                        </div>
+                    </div>
+
+                    <!-- Acompañamiento Pedagógico -->
+                    <div class="flex items-center mt-6">
+                        <input type="checkbox" id="pedagogico" class="h-6 w-6 text-accentGreen rounded focus:ring-accentGreen checked:bg-accentGreen border-gray-300">
+                        <label for="pedagogico" class="ml-3 block text-xl font-semibold text-gray-700">Acompañamiento Pedagógico</label>
+                    </div>
+
+                    <!-- Número de Comidas Diarias -->
+                    <div>
+                        <label for="numComidas" class="block text-xl font-semibold text-gray-700 mb-2 mt-6">Número de Comidas Diarias:</label>
+                        <select id="numComidas" class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-primary focus:border-primary text-lg">
+                            <option value="0">0 Comidas</option>
+                            <option value="1">1 Comida</option>
+                            <option value="2">2 Comidas</option>
+                            <option value="3">3 Comidas</option>
+                        </select>
+                    </div>
+
+
+
+                    <!-- Resultado del Cálculo -->
+                    <div class="mt-10 p-6 bg-primary text-white rounded-lg shadow-inner text-center">
+                        <h3 class="text-2xl font-semibold mb-2">Costo Estimado:</h3>
+                        <p id="costoEstimado" class="text-5xl font-extrabold text-secondary">S/ 0.00</p>
+                        <p class="text-sm opacity-80 mt-2">Este es un estimado, contáctanos para una cotización exacta.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de Recomendaciones (Testimonios) -->
+    <section id="recomendaciones" class="section-padding bg-lightYellow">
+        <div class="container mx-auto text-center px-4">
+            <h2 class="text-4xl md:text-5xl font-extrabold text-darkBlue mb-12">
+                Lo que Dicen los Padres
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Testimonio 1 -->
+                <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-primary hover:shadow-xl transition duration-300">
+                    <p class="italic text-gray-700 mb-4">
+                        "Mis Consentidos ha sido el mejor lugar para mi hija. El amor y la dedicación del equipo son increíbles. ¡Mi hija adora ir a la guardería cada día!"
+                    </p>
+                    <div class="flex items-center justify-center mt-4">
+                        <!-- Para agregar una foto real, reemplaza la URL de 'src' con la de tu imagen -->
+                        <!-- Se agregó un placeholder para asegurar la visibilidad -->
+                        <img src="https://placehold.co/60x60/3B82F6/FFFFFF?text=MJ" alt="Foto de María J." class="w-12 h-12 rounded-full mr-3 object-cover">
+                        <p class="font-bold text-darkBlue">María J. - Madre de Sofía</p>
+                    </div>
+                </div>
+                <!-- Testimonio 2 -->
+                <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-accentGreen hover:shadow-xl transition duration-300">
+                    <p class="italic text-gray-700 mb-4">
+                        "La atención pedagógica es excelente, he notado un gran avance en el desarrollo de mi hijo. Las actividades son muy creativas y divertidas."
+                    </p>
+                    <div class="flex items-center justify-center mt-4">
+                        <!-- Para agregar una foto real, reemplaza la URL de 'src' con la de tu imagen -->
+                        <!-- Se agregó un placeholder para asegurar la visibilidad -->
+                        <img src="https://placehold.co/60x60/22C55E/FFFFFF?text=RP" alt="Foto de Roberto P." class="w-12 h-12 rounded-full mr-3 object-cover">
+                        <p class="font-bold text-darkBlue">Roberto P. - Padre de Juan</p>
+                    </div>
+                </div>
+                <!-- Testimonio 3 -->
+                <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-secondary hover:shadow-xl transition duration-300">
+                    <p class="italic text-gray-700 mb-4">
+                        "Estoy muy contenta con la alimentación que reciben los niños. Siempre variada, fresca y saludable. Es un alivio saber que está bien nutrida."
+                    </p>
+                    <div class="flex items-center justify-center mt-4">
+                        <!-- Para agregar una foto real, reemplaza la URL de 'src' con la de tu imagen -->
+                        <!-- Se agregó un placeholder para asegurar la visibilidad -->
+                        <img src="https://placehold.co/60x60/FACC15/darkBlue/FFFFFF?text=AV" alt="Foto de Ana V." class="w-12 h-12 rounded-full mr-3 object-cover">
+                        <p class="font-bold text-darkBlue">Ana V. - Madre de Laura</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de Contacto -->
+    <section id="contacto" class="section-padding bg-darkBlue text-white">
+        <div class="container mx-auto text-center px-4">
+            <h2 class="text-4xl md:text-5xl font-extrabold text-secondary mb-12">
+                ¡Contáctanos!
+            </h2>
+            <div class="flex flex-col md:flex-row justify-center items-center md:items-start gap-12">
+                <div class="md:w-1/2 lg:w-1/3 text-center md:text-left">
+                    <!-- Sección: Encuéntranos en -->
+                    <h3 class="text-3xl font-bold mb-6">Encuéntranos en:</h3>
+                    <div class="flex flex-wrap justify-center md:justify-start gap-6 mb-8">
+                        <a href="https://youtube.com/@mis.consentidos?si=SNs5m8j_xuZous4p" target="_blank" class="text-red-600 hover:text-white transition transform duration-200 hover:scale-110 text-5xl" aria-label="YouTube">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                        <a href="https://www.instagram.com/mis.consentidos.pe/" target="_blank" class="text-pink-500 hover:text-white transition transform duration-200 hover:scale-110 text-5xl" aria-label="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://www.facebook.com/misconsentidospe/" target="_blank" class="text-blue-600 hover:text-white transition transform duration-200 hover:scale-110 text-5xl" aria-label="Facebook">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <a href="https://www.tiktok.com/tiktokstudio/content" target="_blank" class="text-black hover:text-white transition transform duration-200 hover:scale-110 text-5xl" aria-label="TikTok">
+                            <i class="fab fa-tiktok"></i>
+                        </a>
+                    </div>
+
+                    <!-- Sección: Habla con nosotros -->
+                    <h3 class="text-3xl font-bold mb-6">Habla con nosotros:</h3>
+                    <div class="flex flex-wrap justify-center md:justify-start gap-6 mb-8">
+                        <a href="https://wa.me/message/CGI2ICNVGYSZE1" target="_blank" class="text-green-500 hover:text-white transition transform duration-200 hover:scale-110 text-5xl" aria-label="WhatsApp">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                    </div>
+
+                    <!-- Sección: Ubícanos -->
+                    <h3 class="text-3xl font-bold mb-6">Ubícanos:</h3>
+                    <div class="flex flex-wrap justify-center md:justify-start gap-6 mb-8">
+                        <a href="https://maps.app.goo.gl/dJviby1tfd4Pxz1A7" target="_blank" class="text-red-600 hover:text-white transition transform duration-200 hover:scale-110 text-5xl" aria-label="Google Maps">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </a>
+                    </div>
+                    
+                    <p class="text-lg mt-6 opacity-90">Teléfono: +51 934 859 892</p>
+                    <p class="text-lg opacity-90">Email: gerencia@mis-consentidos-pe.com</p>
+                </div>
+
+                <!-- Formulario de Contacto -->
+                <div class="md:w-1/2 lg:w-1/3 mt-12 md:mt-0 bg-white p-8 rounded-lg shadow-xl border-t-8 border-secondary text-gray-800">
+                    <h3 class="text-3xl font-bold mb-6 text-darkBlue">Envíanos un mensaje</h3>
+                    <!-- El formulario ahora apunta directamente a send_email.php -->
+                    <form id="contactForm" action="send_email.php" method="POST" class="space-y-4">
+                        <div>
+                            <label for="nombre" class="sr-only">Nombre</label>
+                            <input type="text" id="nombre" name="nombre" placeholder="Tu Nombre" required class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-primary focus:border-primary text-lg">
+                        </div>
+                        <div>
+                            <label for="email" class="sr-only">Correo Electrónico</label>
+                            <input type="email" id="email" name="email" placeholder="Tu Correo Electrónico" required class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-primary focus:border-primary text-lg">
+                        </div>
+                        <div>
+                            <label for="telefono" class="sr-only">Teléfono</label>
+                            <input type="tel" id="telefono" name="telefono" placeholder="Tu Teléfono (opcional)" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-primary focus:border-primary text-lg">
+                        </div>
+                        <div>
+                            <label for="mensaje" class="sr-only">Mensaje</label>
+                            <textarea id="mensaje" name="mensaje" rows="5" placeholder="Tu Mensaje" required class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-primary focus:border-primary text-lg"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-secondary hover:bg-yellow-400 text-darkBlue font-bold py-3 px-6 rounded-md text-lg transition transform duration-300 hover:scale-105 shadow-md">
+                            Enviar Mensaje
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 text-center">
+        <div class="container mx-auto px-4">
+            <p>&copy; 2025 Mis Consentidos. Todos los derechos reservados.</p>
+            <p class="mt-2 text-sm opacity-80">Diseñado con amor para los más pequeños.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Función para mostrar mensajes de confirmación/error
+        function showMessage(message, type) {
+            const messageBox = document.createElement('div');
+            messageBox.classList.add('message-box', type);
+            messageBox.textContent = message;
+            document.body.appendChild(messageBox);
+
+            setTimeout(() => {
+                messageBox.remove();
+            }, 3000); // El mensaje desaparece después de 3 segundos
+        }
+
+        // JavaScript para la calculadora de precios
+        const numHorasInput = document.getElementById('numHoras');
+        const displayHoras = document.getElementById('displayHoras');
+        const pedagogicoCheckbox = document.getElementById('pedagogico');
+        const numComidasSelect = document.getElementById('numComidas');
+        const frecuenciaPagoRadios = document.querySelectorAll('input[name="frecuenciaPago"]');
+        const costoEstimadoSpan = document.getElementById('costoEstimado');
+
+        // Valores base para el cálculo (ajustados según tus indicaciones)
+        const precioDiarioFijo = 25; // S/ precio fijo por día
+        const precioBaseSemanal4Horas = 60; // S/ base semanal por 4 horas diarias
+        const incrementoSemanalPorHoraAdicional = 6; // S/ incremento semanal por cada hora adicional diaria
+        const costoComidaSemanal = 20; // S/ costo adicional por comida a la semana
+        const costoPedagogicoSemanal = 20; // S/ costo adicional por acompañamiento pedagógico a la semana
+
+        // Función para calcular el costo
+        function calcularCosto() {
+            const horasDiarias = parseInt(numHorasInput.value);
+            const tienePedagogico = pedagogicoCheckbox.checked;
+            const numComidas = parseInt(numComidasSelect.value);
+
+            let costoTotal = 0;
+            let costoBaseCalculado = 0;
+            let frecuenciaSeleccionada = document.querySelector('input[name="frecuenciaPago"]:checked').value;
+
+            // Calcular costo base según la frecuencia y horas
+            if (frecuenciaSeleccionada === 'diario') {
+                costoBaseCalculado = precioDiarioFijo;
+            } else { // Semanal, Quincenal, Mensual se basan en el cálculo semanal
+                if (horasDiarias < 4) { // Asegurar mínimo de 4 horas
+                    numHorasInput.value = 4; // Ajustar visualmente el slider si está por debajo del mínimo
+                    displayHoras.textContent = '4 horas';
+                    // No debería ocurrir si el min del slider es 4, pero es una protección
+                }
+                
+                // Calcular costo semanal según las horas diarias
+                let costoSemanalPorHoras = precioBaseSemanal4Horas;
+                if (horasDiarias > 4) {
+                    costoSemanalPorHoras += (horasDiarias - 4) * incrementoSemanalPorHoraAdicional;
+                }
+                
+                // Añadir extras semanales
+                if (tienePedagogico) costoSemanalPorHoras += costoPedagogicoSemanal;
+                costoSemanalPorHoras += numComidas * costoComidaSemanal;
+
+                switch (frecuenciaSeleccionada) {
+                    case 'semanal':
+                        costoBaseCalculado = costoSemanalPorHoras;
+                        break;
+                    case 'quincenal':
+                        costoBaseCalculado = costoSemanalPorHoras * 2; // Dos semanas
+                        break;
+                    case 'mensual':
+                        costoBaseCalculado = costoSemanalPorHoras * 4; // Cuatro semanas
+                        break;
+                }
+            }
+
+            costoTotal = costoBaseCalculado;
+
+            // Actualizar el texto del slider
+            displayHoras.textContent = `${horasDiarias} horas`;
+            // Mostrar el costo estimado
+            costoEstimadoSpan.textContent = `S/ ${costoTotal.toFixed(2)}`;
+        }
+
+        // Añadir listeners a los elementos de la calculadora
+        numHorasInput.addEventListener('input', calcularCosto);
+        pedagogicoCheckbox.addEventListener('change', calcularCosto);
+        numComidasSelect.addEventListener('change', calcularCosto);
+        frecuenciaPagoRadios.forEach(radio => radio.addEventListener('change', calcularCosto));
+
+        // Calcular el costo inicial al cargar la página
+        calcularCosto();
+
+        // JavaScript para el efecto de la barra de navegación (opcional)
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar-fixed');
+            if (window.scrollY > 50) { // Si el scroll es mayor a 50px
+                navbar.classList.add('bg-white', 'shadow-md'); // Añadir fondo blanco y sombra
+            } else {
+                navbar.classList.remove('bg-white', 'shadow-md'); // Quitar fondo y sombra
+                navbar.classList.add('bg-white'); // Asegurar que siempre tenga un fondo
+            }
+        });
+
+        // Asegurarse de que el scroll funcione correctamente para el encabezado fijo
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (!targetElement) {
+                    console.warn(`Elemento con ID '${targetId}' no encontrado.`);
+                    return;
+                }
+
+                const headerOffset = document.querySelector('.navbar-fixed').offsetHeight; // Altura de la barra de navegación
+                const elementPosition = targetElement.getBoundingClientRect().top + window.scrollY;
+                const offsetPosition = elementPosition - headerOffset - 20; // Ajuste adicional
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: "smooth"
+                });
+            });
+        });
+
+        // Lógica para el manejo de mensajes de estado del formulario (después de la redirección PHP)
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const status = urlParams.get('status');
+            const message = urlParams.get('message');
+
+            if (status === 'success') {
+                showMessage(decodeURIComponent(message) || '¡Mensaje enviado con éxito!', 'success');
+            } else if (status === 'error') {
+                showMessage(decodeURIComponent(message) || 'Error al enviar el mensaje. Por favor, inténtalo de nuevo.', 'error');
+            }
+            // Limpiar los parámetros de la URL para evitar que el mensaje se muestre de nuevo al recargar
+            if (status || message) { // Solo limpiar si hay parámetros de estado
+                history.replaceState({}, document.title, window.location.pathname);
+            }
+        });
+
+        // Lógica para el menú de hamburguesa
+        const hamburgerButton = document.getElementById('hamburger-button');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebar-overlay');
+        const sidebarLinks = document.querySelectorAll('.sidebar-link');
+
+        function closeSidebar() {
+            if (sidebar && sidebarOverlay) {
+                sidebar.classList.remove('open');
+                sidebarOverlay.classList.remove('visible');
+                document.body.style.overflow = '';
+            }
+        }
+
+        function openSidebar() {
+            if (sidebar && sidebarOverlay) {
+                sidebar.classList.add('open');
+                sidebarOverlay.classList.add('visible');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function toggleSidebar() {
+            if (sidebar && sidebar.classList.contains('open')) {
+                closeSidebar();
+            } else {
+                openSidebar();
+            }
+        }
+
+        if (hamburgerButton) {
+            hamburgerButton.addEventListener('click', toggleSidebar);
+        }
+        if (sidebarOverlay) {
+            sidebarOverlay.addEventListener('click', closeSidebar);
+        }
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', closeSidebar);
+        });
+
+        // LÓGICA PARA DEBUGGING DEL LOGO
+        window.addEventListener('DOMContentLoaded', () => {
+            const logoImg = document.getElementById('logo-img');
+            if (logoImg) {
+                console.log('DEBUG: URL del logo en HTML:', logoImg.src);
+                logoImg.addEventListener('load', () => {
+                    console.log('DEBUG: El logo se cargó correctamente.');
+                });
+                logoImg.addEventListener('error', () => {
+                    console.error('DEBUG: ERROR al cargar el logo. La URL que el navegador intentó fue:', logoImg.src);
+                });
+            } else {
+                console.error('DEBUG: No se encontró el elemento con ID "logo-img".');
+            }
+        });
+    </script>
+</body>
+</html>
