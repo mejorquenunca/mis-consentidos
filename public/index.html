@@ -109,6 +109,7 @@
         }
         input[type="number"] {
             -moz-appearance: textfield;
+            appearance: none;
         }
 
         /* Estilos para los mensajes de confirmación */
@@ -521,26 +522,32 @@
                 <div class="md:w-1/2 lg:w-1/3 mt-12 md:mt-0 bg-white p-8 rounded-lg shadow-xl border-t-8 border-secondary text-gray-800">
                     <h3 class="text-3xl font-bold mb-6 text-darkBlue">Envíanos un mensaje</h3>
                     <!-- El formulario ahora apunta directamente a send_email.php -->
-                    <form id="contactForm" action="send_email.php" method="POST" class="space-y-4">
-                        <div>
-                            <label for="nombre" class="sr-only">Nombre</label>
-                            <input type="text" id="nombre" name="nombre" placeholder="Tu Nombre" required class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-primary focus:border-primary text-lg">
-                        </div>
-                        <div>
-                            <label for="email" class="sr-only">Correo Electrónico</label>
-                            <input type="email" id="email" name="email" placeholder="Tu Correo Electrónico" required class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-primary focus:border-primary text-lg">
-                        </div>
-                        <div>
-                            <label for="telefono" class="sr-only">Teléfono</label>
-                            <input type="tel" id="telefono" name="telefono" placeholder="Tu Teléfono (opcional)" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-primary focus:border-primary text-lg">
-                        </div>
-                        <div>
-                            <label for="mensaje" class="sr-only">Mensaje</label>
-                            <textarea id="mensaje" name="mensaje" rows="5" placeholder="Tu Mensaje" required class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-primary focus:border-primary text-lg"></textarea>
-                        </div>
-                        <button type="submit" class="w-full bg-secondary hover:bg-yellow-400 text-darkBlue font-bold py-3 px-6 rounded-md text-lg transition transform duration-300 hover:scale-105 shadow-md">
-                            Enviar Mensaje
-                        </button>
+                    <!-- ✅ Formulario de Contacto corregido -->
+                    <form id="contactForm" action="/api/send_email" method="POST" class="space-y-4">
+                    <div>
+                        <label for="nombre" class="sr-only">Nombre</label>
+                        <input type="text" id="nombre" name="nombre" placeholder="Tu Nombre" required
+                        class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-primary focus:border-primary text-lg">
+                    </div>
+                    <div>
+                        <label for="email" class="sr-only">Correo Electrónico</label>
+                        <input type="email" id="email" name="email" placeholder="Tu Correo Electrónico" required
+                        class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-primary focus:border-primary text-lg">
+                    </div>
+                    <div>
+                        <label for="telefono" class="sr-only">Teléfono</label>
+                        <input type="tel" id="telefono" name="telefono" placeholder="Tu Teléfono (opcional)"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-primary focus:border-primary text-lg">
+                    </div>
+                    <div>
+                        <label for="mensaje" class="sr-only">Mensaje</label>
+                        <textarea id="mensaje" name="mensaje" rows="5" placeholder="Tu Mensaje" required
+                        class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-primary focus:border-primary text-lg"></textarea>
+                    </div>
+                    <button type="submit"
+                        class="w-full bg-secondary hover:bg-yellow-400 text-darkBlue font-bold py-3 px-6 rounded-md text-lg transition transform duration-300 hover:scale-105 shadow-md">
+                        Enviar Mensaje
+                    </button>
                     </form>
                 </div>
             </div>
@@ -749,6 +756,126 @@
                 console.error('DEBUG: No se encontró el elemento con ID "logo-img".');
             }
         });
+        
+        // 🚀 NUEVO: Manejo del formulario de contacto
+        document.getElementById("contactForm").addEventListener("submit", async function(e) {
+        e.preventDefault();
+
+        const data = {
+            nombre: document.getElementById("nombre").value,
+            email: document.getElementById("email").value,
+            telefono: document.getElementById("telefono").value,
+            mensaje: document.getElementById("mensaje").value
+        };
+
+        try {
+            const response = await fetch("/api/send_email", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            alert(result.message || "Mensaje enviado correctamente");
+        } catch (error) {
+            console.error("Error:", error);
+            alert("Hubo un error al enviar el mensaje. Intenta de nuevo.");
+        }
+        });
     </script>
+        <!-- Script para manejar el formulario (pegarlo COMO UN BLOQUE NUEVO justo antes de </body>) -->
+    <script>
+    (function () {
+    const contactForm = document.getElementById('contactForm');
+    if (!contactForm) return;
+
+    const submitBtn = contactForm.querySelector('button[type="submit"]');
+
+    contactForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        // Leer valores
+        const data = {
+        nombre: (document.getElementById('nombre') || {}).value || '',
+        email: (document.getElementById('email') || {}).value || '',
+        telefono: (document.getElementById('telefono') || {}).value || '',
+        mensaje: (document.getElementById('mensaje') || {}).value || ''
+        };
+
+        // Bloquear botón para evitar envíos dobles
+        if (submitBtn) {
+        submitBtn.disabled = true;
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = 'Enviando...';
+        try {
+            const res = await fetch('/api/send_email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+            });
+
+            let json;
+            try { json = await res.json(); } catch (err) { json = {}; }
+
+            if (res.ok) {
+            // Mostrar mensaje de éxito (usa showMessage si existe)
+            if (typeof showMessage === 'function') {
+                showMessage(json.message || '¡Mensaje enviado con éxito!', 'success');
+            } else {
+                alert(json.message || '¡Mensaje enviado con éxito!');
+            }
+            contactForm.reset();
+            } else {
+            // Error retornado por el servidor
+            const errMsg = json.error || json.message || 'Error al enviar el mensaje';
+            if (typeof showMessage === 'function') {
+                showMessage(errMsg, 'error');
+            } else {
+                alert(errMsg);
+            }
+            console.error('Error desde /api/send_email:', json);
+            }
+        } catch (error) {
+            // Error de red u otro
+            if (typeof showMessage === 'function') {
+            showMessage('Error de conexión. Intenta más tarde.', 'error');
+            } else {
+            alert('Error de conexión. Intenta más tarde.');
+            }
+            console.error('Excepción al enviar /api/send_email:', error);
+        } finally {
+            // Restaurar botón
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText || 'Enviar Mensaje';
+        }
+        } else {
+        // Si no hay botón (raro), igual intentar el envío
+        try {
+            await fetch('/api/send_email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+            });
+            if (typeof showMessage === 'function') {
+            showMessage('¡Mensaje enviado con éxito!', 'success');
+            } else {
+            alert('¡Mensaje enviado con éxito!');
+            }
+            contactForm.reset();
+        } catch (err) {
+            if (typeof showMessage === 'function') {
+            showMessage('Error de conexión. Intenta más tarde.', 'error');
+            } else {
+            alert('Error de conexión. Intenta más tarde.');
+            }
+            console.error(err);
+        }
+        }
+    });
+    })();
+    </script>
+</body>
 </body>
 </html>
