@@ -768,19 +768,30 @@
             mensaje: document.getElementById("mensaje").value
         };
 
+        // CÓDIGO MEJORADO
         try {
             const response = await fetch("/api/send_email", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data)
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
             });
 
+            // 1. VERIFICAR EL ESTADO HTTP ANTES DE LEER JSON
+            if (!response.ok) {
+                // Si no es un status 200 (podría ser 404, 500, 502, etc.)
+                console.error("Error en la respuesta del servidor:", response.status, response.statusText);
+                // Lanzamos un error, que será capturado por el bloque 'catch'
+                throw new Error(`El servidor devolvió un error con el código: ${response.status}`);
+            }
+
+            // 2. SOLO LEER JSON SI LA RESPUESTA FUE EXITOSA
             const result = await response.json();
             alert(result.message || "Mensaje enviado correctamente");
+            
         } catch (error) {
-            console.error("Error:", error);
+            console.error("Error desde /api/send_email:", error);
             alert("Hubo un error al enviar el mensaje. Intenta de nuevo.");
         }
         });
