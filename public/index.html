@@ -360,6 +360,36 @@
             <h2 class="text-4xl md:text-5xl font-extrabold text-darkBlue mb-12">
                 Calcula Tu Presupuesto
             </h2>
+
+            <!-- ====== BANNER DE URGENCIA ====== -->
+            <div class="urgency-banner bg-gradient-to-r from-red-500 to-red-600 text-white py-4 px-6 rounded-lg shadow-xl max-w-3xl mx-auto mb-8 animate-bounce-slow">
+            <div class="flex items-center justify-center gap-3 text-center flex-wrap">
+                <svg class="w-8 h-8 animate-pulse flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+                </svg>
+                <div>
+                <p class="text-2xl font-extrabold">🔥 ¡Solo quedan 5 cupos disponibles!</p>
+                <p class="text-sm opacity-90 mt-1">Promoción de inscripción: -20% si reservas esta semana</p>
+                </div>
+            </div>
+            </div>
+
+            <style>
+            @keyframes bounce-slow {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-5px);
+            }
+            }
+
+            .animate-bounce-slow {
+            animation: bounce-slow 3s ease-in-out infinite;
+            }
+            </style>
+            <!-- ====== FIN BANNER URGENCIA ====== -->
+
             <div class="bg-white p-8 md:p-12 rounded-lg shadow-xl max-w-2xl mx-auto border-t-8 border-primary">
                 <div class="space-y-6 text-left">
                     <!-- Opciones de Cálculo de Pago -->
@@ -420,6 +450,69 @@
                         <h3 class="text-2xl font-semibold mb-2">Costo Estimado:</h3>
                         <p id="costoEstimado" class="text-5xl font-extrabold text-secondary">S/ 0.00</p>
                         <p class="text-sm opacity-80 mt-2">Este es un estimado, contáctanos para una cotización exacta.</p>
+
+                    <!-- ====== BOTONES DE ACCIÓN ====== -->
+                    <div class="mt-6 flex flex-col sm:flex-row gap-4 justify-center">
+                    <a 
+                        href="https://wa.me/51934859892?text=Hola,%20quiero%20agendar%20una%20visita%20gratuita%20a%20Mis%20Consentidos" 
+                        target="_blank"
+                        class="cta-button cta-primary"
+                    >
+                        📅 Agendar Visita GRATIS
+                    </a>
+                    <a 
+                        href="https://wa.me/51934859892?text=Hola,%20quiero%20información%20sobre%20disponibilidad%20de%20cupos" 
+                        target="_blank"
+                        class="cta-button cta-secondary"
+                    >
+                        ⏰ Ver Disponibilidad
+                    </a>
+                    </div>
+
+                    <style>
+                    .cta-button {
+                    display: inline-block;
+                    padding: 14px 28px;
+                    border-radius: 8px;
+                    font-weight: 700;
+                    font-size: 16px;
+                    text-decoration: none;
+                    transition: all 0.3s ease;
+                    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+                    text-align: center;
+                    }
+
+                    .cta-primary {
+                    background: linear-gradient(135deg, #FACC15 0%, #F59E0B 100%);
+                    color: #1E40AF;
+                    }
+
+                    .cta-primary:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+                    }
+
+                    .cta-secondary {
+                    background: white;
+                    color: #1E40AF;
+                    border: 2px solid #FACC15;
+                    }
+
+                    .cta-secondary:hover {
+                    background: #FEF3C7;
+                    transform: translateY(-2px);
+                    }
+
+                    @media (max-width: 640px) {
+                    .cta-button {
+                        width: 100%;
+                        font-size: 15px;
+                        padding: 12px 20px;
+                    }
+                    }
+                    </style>
+                    <!-- ====== FIN BOTONES CTA ====== -->
+
                     </div>
                 </div>
             </div>
