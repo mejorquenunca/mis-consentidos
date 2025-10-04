@@ -887,6 +887,85 @@
     });
     })();
     </script>
-</body>
+    <!-- ====== BOTÓN WHATSAPP FLOTANTE ====== -->
+<a 
+  href="https://wa.me/51934859892?text=Hola,%20vi%20su%20página%20web%20y%20quiero%20información%20sobre%20Mis%20Consentidos" 
+  target="_blank" 
+  rel="noopener noreferrer" 
+  class="whatsapp-float-btn"
+  aria-label="Contactar por WhatsApp"
+>
+  <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M16 0C7.164 0 0 7.164 0 16c0 2.832.744 5.488 2.04 7.792L0 32l8.4-2.008A15.91 15.91 0 0016 32c8.836 0 16-7.164 16-16S24.836 0 16 0zm0 29.2c-2.552 0-4.932-.728-6.944-1.984l-.496-.296-5.152 1.232 1.28-4.992-.328-.52A13.144 13.144 0 012.8 16c0-7.28 5.92-13.2 13.2-13.2S29.2 8.72 29.2 16 23.28 29.2 16 29.2z" fill="white"/>
+    <path d="M23.2 19.36c-.4-.2-2.36-1.16-2.72-1.296-.36-.136-.624-.2-.888.2-.264.4-1.024 1.296-1.256 1.56-.232.264-.464.296-.864.096-.4-.2-1.688-.624-3.216-1.984-1.192-1.056-1.992-2.368-2.224-2.768-.232-.4-.024-.616.176-.816.176-.176.4-.464.6-.696.2-.232.264-.4.4-.664.136-.264.072-.496-.04-.696-.112-.2-1.032-2.48-1.416-3.4-.376-.896-.744-.776-1.024-.792-.264-.016-.56-.016-.856-.016-.296 0-.776.112-1.184.56-.408.448-1.552 1.52-1.552 3.704s1.592 4.296 1.808 4.592c.216.296 3.056 4.664 7.4 6.544 1.032.448 1.84.712 2.472.912.984.312 1.88.264 2.592.16.792-.12 2.36-.968 2.696-1.896.336-.928.336-1.728.232-1.896-.104-.168-.4-.264-.8-.464z" fill="white"/>
+  </svg>
+  <span class="whatsapp-text">Reserva tu cupo</span>
+</a>
+
+<style>
+.whatsapp-float-btn {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+  color: white;
+  border-radius: 50px;
+  padding: 15px 25px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+  z-index: 1000;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  animation: whatsapp-pulse 2s infinite;
+}
+
+.whatsapp-float-btn:hover {
+  transform: scale(1.05) translateY(-2px);
+  box-shadow: 0 6px 30px rgba(37, 211, 102, 0.6);
+}
+
+.whatsapp-text {
+  color: white;
+}
+
+@keyframes whatsapp-pulse {
+  0%, 100% {
+    box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+  }
+  50% {
+    box-shadow: 0 4px 30px rgba(37, 211, 102, 0.7);
+  }
+}
+
+@media (max-width: 768px) {
+  .whatsapp-float-btn {
+    bottom: 20px;
+    right: 20px;
+    padding: 12px 20px;
+    font-size: 14px;
+  }
+  
+  .whatsapp-float-btn svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .whatsapp-text {
+    display: none;
+  }
+  
+  .whatsapp-float-btn {
+    padding: 15px;
+    border-radius: 50%;
+  }
+}
+</style>
+<!-- ====== FIN BOTÓN WHATSAPP ====== -->
 </body>
 </html>
