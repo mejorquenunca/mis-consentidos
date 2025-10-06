@@ -1047,7 +1047,7 @@
   </svg>
   <span class="whatsapp-text">Reserva tu cupo</span>
 </a>
-
+<!-- ====== FIN BOTÓN WHATSAPP ====== -->
 <style>
 .whatsapp-float-btn {
   position: fixed;
@@ -1112,6 +1112,50 @@
   }
 }
 </style>
-<!-- ====== FIN BOTÓN WHATSAPP ====== -->
+ <script>
+// JavaScript para el menú hamburguesa
+(function() {
+    const hamburgerButton = document.getElementById('hamburger-button');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebar-overlay');
+    const sidebarLinks = document.querySelectorAll('.sidebar-link');
+
+    function closeSidebar() {
+        if (sidebar && sidebarOverlay) {
+            sidebar.classList.remove('open');
+            sidebarOverlay.classList.remove('visible');
+            document.body.style.overflow = '';
+        }
+    }
+
+    function openSidebar() {
+        if (sidebar && sidebarOverlay) {
+            sidebar.classList.add('open');
+            sidebarOverlay.classList.add('visible');
+            document.body.style.overflow = 'hidden';
+        }
+    }
+
+    if (hamburgerButton) {
+        hamburgerButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (sidebar && sidebar.classList.contains('open')) {
+                closeSidebar();
+            } else {
+                openSidebar();
+            }
+        });
+    }
+
+    if (sidebarOverlay) {
+        sidebarOverlay.addEventListener('click', closeSidebar);
+    }
+
+    sidebarLinks.forEach(function(link) {
+        link.addEventListener('click', closeSidebar);
+    });
+})();
+</script>
 </body>
 </html>
