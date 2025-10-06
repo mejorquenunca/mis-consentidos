@@ -1,0 +1,13 @@
+.vercel
+# Directorios de dependencias
+node_modules
+# Directorios de compilación de Next.js
+.next
+out
+# Archivos de entorno local (contienen credenciales)
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+# Archivos de diagnóstico
+.vscode-test
