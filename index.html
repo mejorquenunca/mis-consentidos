@@ -1015,60 +1015,70 @@
     </footer>
 
     <script>
-  // CÓDIGO DEL FORMULARIO - Guardar en Sheets Y abrir WhatsApp
-document.getElementById("contactForm").addEventListener("submit", async function(e) {
-    e.preventDefault();
-    
-    // Obtener valores del formulario
-    const nombre = document.getElementById("nombre").value;
-    const email = document.getElementById("email").value;
-    const telefono = document.getElementById("telefono").value;
-    const mensaje = document.getElementById("mensaje").value;
-    
-    // Mostrar mensaje de "enviando..."
-    const submitButton = this.querySelector('button[type="submit"]');
-    const originalText = submitButton.textContent;
-    submitButton.textContent = "Enviando...";
-    submitButton.disabled = true;
-    
-    try {
+    // CÓDIGO DEL FORMULARIO - Guardar en Sheets Y abrir WhatsApp
+    document.getElementById("contactForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+        
+        // Obtener valores del formulario
+        const nombre = document.getElementById("nombre").value;
+        const email = document.getElementById("email").value;
+        const telefono = document.getElementById("telefono").value;
+        const mensaje = document.getElementById("mensaje").value;
+        
+        // Mostrar mensaje de "enviando..."
+        const submitButton = this.querySelector('button[type="submit"]');
+        const originalText = submitButton.textContent;
+        submitButton.textContent = "Enviando...";
+        submitButton.disabled = true;
+        
+        // URL del script de Google
+        const scriptURL = "https://script.google.com/macros/s/AKfycbyOrDo3vMEnpm48VwlTI7-lNVZfIB9XYsLL0W1M8pFfI38xPMffz9Vwh74xzcdSJdr-gA/exec";
+        
+        // Crear FormData
+        const formData = new FormData();
+        formData.append("nombre", nombre);
+        formData.append("email", email);
+        formData.append("telefono", telefono);
+        formData.append("mensaje", mensaje);
+        
         // 1. PRIMERO: Enviar a Google Sheets
-        const response = await fetch("https://script.google.com/macros/s/AKfycbyOrDo3vMEnpm48VwlTI7-lNVZfIB9XYsLL0W1M8pFfI38xPMffz9Vwh74xzcdSJdr-gA/exec", {
+        fetch(scriptURL, {
             method: "POST",
-            mode: "no-cors",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                nombre: nombre,
-                email: email,
-                telefono: telefono,
-                mensaje: mensaje
-            })
+            body: formData
+        })
+        .then(response => {
+            console.log("Datos enviados a Sheets");
+            
+            // 2. LUEGO: Abrir WhatsApp
+            const whatsappMessage = `Hola, soy ${nombre}. ${mensaje}`;
+            const whatsappURL = `https://wa.me/51934859892?text=${encodeURIComponent(whatsappMessage)}`;
+            
+            // Abrir WhatsApp
+            window.open(whatsappURL, "_blank");
+            
+            // Limpiar formulario
+            document.getElementById("contactForm").reset();
+            
+            // Mostrar mensaje de éxito
+            alert("¡Mensaje enviado! Revisa WhatsApp.");
+            
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            
+            // Aunque haya error, abrir WhatsApp de todas formas
+            const whatsappMessage = `Hola, soy ${nombre}. ${mensaje}`;
+            const whatsappURL = `https://wa.me/51934859892?text=${encodeURIComponent(whatsappMessage)}`;
+            window.open(whatsappURL, "_blank");
+            
+            alert("Te hemos llevado a WhatsApp. Si deseas, guarda estos datos manualmente.");
+        })
+        .finally(() => {
+            // Restaurar botón
+            submitButton.textContent = originalText;
+            submitButton.disabled = false;
         });
-        
-        // 2. LUEGO: Abrir WhatsApp
-        const whatsappMessage = `Hola, soy ${nombre}. ${mensaje}`;
-        const whatsappURL = `https://wa.me/51934859892?text=${encodeURIComponent(whatsappMessage)}`;
-        
-        // Mostrar mensaje de éxito
-        alert("¡Datos guardados! Ahora te llevamos a WhatsApp.");
-        
-        // Abrir WhatsApp
-        window.open(whatsappURL, "_blank");
-        
-        // Limpiar formulario
-        this.reset();
-        
-    } catch (error) {
-        console.error("Error:", error);
-        alert("Hubo un problema al enviar. Intenta de nuevo.");
-    } finally {
-        // Restaurar botón
-        submitButton.textContent = originalText;
-        submitButton.disabled = false;
-    }
-});
+    });
     </script>
     <!-- ====== BOTÓN WHATSAPP FLOTANTE ====== -->
 <a 
