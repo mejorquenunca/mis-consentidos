@@ -1024,23 +1024,21 @@
     const mensaje = document.getElementById("mensaje").value;
     
     // 1. Guardar en Google Sheets
-    try {
-        , await fetch('https://script.google.com/macros/s/AKfycbyOrDo3vMEnpm48VwlTI7-lNVZfIB9XYsLL0W1M8pFfI38xPMffz9Vwh74xzcdSJdr-gA/exec', {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                nombre: nombre,
-                email: email,
-                telefono: telefono,
-                mensaje: mensaje
-            })
-        });
-    } catch (error) {
-        console.log('Error guardando en Sheets:', error);
-    }
+    document.getElementById("contactForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    
+    const nombre = document.getElementById("nombre").value;
+    const email = document.getElementById("email").value;
+    const telefono = document.getElementById("telefono").value;
+    const mensaje = document.getElementById("mensaje").value;
+    
+    // Abrir WhatsApp
+    const textoWhatsApp = `Hola, soy ${nombre}%0A%0AEmail: ${email}%0ATelefono: ${telefono}%0A%0AMensaje: ${mensaje}`;
+    window.open(`https://wa.me/51934859892?text=${textoWhatsApp}`, '_blank');
+    
+    // Limpiar formulario
+    this.reset();
+});
     
     // 2. Abrir WhatsApp
     const textoWhatsApp = `Hola, soy ${nombre}%0A%0AEmail: ${email}%0ATelefono: ${telefono}%0A%0AMensaje: ${mensaje}`;

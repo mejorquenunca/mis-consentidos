@@ -1015,23 +1015,38 @@
 
     <script>
     // Manejo del formulario de contacto - Directo a WhatsApp
-    document.getElementById("contactForm").addEventListener("submit", function(e) {
-        e.preventDefault();
-
-        const nombre = document.getElementById("nombre").value;
-        const email = document.getElementById("email").value;
-        const telefono = document.getElementById("telefono").value;
-        const mensaje = document.getElementById("mensaje").value;
-
-        // Crear mensaje para WhatsApp
-        const textoWhatsApp = `Hola, soy ${nombre}%0A%0AEmail: ${email}%0ATelefono: ${telefono}%0A%0AMensaje: ${mensaje}`;
-        
-        // Abrir WhatsApp
-        window.open(`https://wa.me/51934859892?text=${textoWhatsApp}`, '_blank');
-        
-        // Limpiar formulario
-        this.reset();
-    });
+  document.getElementById("contactForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    
+    const nombre = document.getElementById("nombre").value;
+    const email = document.getElementById("email").value;
+    const telefono = document.getElementById("telefono").value;
+    const mensaje = document.getElementById("mensaje").value;
+    
+    // 1. Guardar en Google Sheets
+document.getElementById("contactForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    
+    const nombre = document.getElementById("nombre").value;
+    const email = document.getElementById("email").value;
+    const telefono = document.getElementById("telefono").value;
+    const mensaje = document.getElementById("mensaje").value;
+    
+    // Abrir WhatsApp
+    const textoWhatsApp = `Hola, soy ${nombre}%0A%0AEmail: ${email}%0ATelefono: ${telefono}%0A%0AMensaje: ${mensaje}`;
+    window.open(`https://wa.me/51934859892?text=${textoWhatsApp}`, '_blank');
+    
+    // Limpiar formulario
+    this.reset();
+});
+    
+    // 2. Abrir WhatsApp
+    const textoWhatsApp = `Hola, soy ${nombre}%0A%0AEmail: ${email}%0ATelefono: ${telefono}%0A%0AMensaje: ${mensaje}`;
+    window.open(`https://wa.me/51934859892?text=${textoWhatsApp}`, '_blank');
+    
+    // 3. Limpiar formulario
+    this.reset();
+});
     </script>
     <!-- ====== BOTÓN WHATSAPP FLOTANTE ====== -->
 <a 
