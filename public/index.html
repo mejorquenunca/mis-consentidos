@@ -300,15 +300,16 @@
 
     <!-- Sección Quiénes Somos -->
     <section id="quienes-somos" class="section-padding bg-lightYellow">
-        <div class="container mx-auto flex flex-col md:flex-row items-center gap-10 px-4">
-            <div class="md:w-1/2">
-                <!-- Se agregó un placeholder para asegurar la visibilidad -->
-                <img src="https://placehold.co/600x400/FACC15/darkBlue/FFFFFF?text=Equipo+Mis+Consentidos" alt="Equipo de Mis Consentidos" class="rounded-lg shadow-xl w-full h-auto object-cover">
-            </div>
-            <div class="md:w-1/2 text-center md:text-left">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-8">
                 <h2 class="text-4xl md:text-5xl font-extrabold text-darkBlue mb-6">
                     Quiénes Somos
                 </h2>
+            </div>
+            <div class="flex justify-center mb-8">
+                <img src="imagenes/quienes-somos.jpg" alt="Equipo de Mis Consentidos" class="rounded-lg shadow-xl w-full max-w-3xl h-auto object-cover">
+            </div>
+            <div class="max-w-3xl mx-auto text-center">
                 <p class="text-lg leading-relaxed text-gray-700 mb-4">
                     En "Mis Consentidos", nos dedicamos a crear un ambiente donde cada niño se sienta amado, valorado y motivado a explorar el mundo que le rodea. Contamos con un equipo de profesionales apasionados y altamente capacitados, comprometidos con el desarrollo integral de tus hijos.
                 </p>
@@ -1024,7 +1025,7 @@
     const mensaje = document.getElementById("mensaje").value;
     
     // 1. Guardar en Google Sheets
-document.getElementById("contactForm").addEventListener("submit", function(e) {
+    document.getElementById("contactForm").addEventListener("submit", function(e) {
     e.preventDefault();
     
     const nombre = document.getElementById("nombre").value;
