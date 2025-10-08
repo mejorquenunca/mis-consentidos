@@ -1014,8 +1014,8 @@
         </div>
     </footer>
 
-    <script>
-    // CÓDIGO DEL FORMULARIO - Guardar en Sheets Y abrir WhatsApp
+        <script>
+    // CÓDIGO DEL FORMULARIO - Sin problemas de CORS
     document.getElementById("contactForm").addEventListener("submit", function(e) {
         e.preventDefault();
         
@@ -1033,25 +1033,47 @@
         
         // URL del script de Google
         const scriptURL = "https://script.google.com/macros/s/AKfycbwDeMzDtD13P09rmYiyjEE2R8X_uTpImhD3dTO4V5UHj6bF2_hXr-d25e8zfH6YMDnncQ/exec";
-        const formData = new FormData();
-        formData.append("nombre", nombre);
-        formData.append("email", email);
-        formData.append("telefono", telefono);
-        formData.append("mensaje", mensaje);
         
-        // 1. PRIMERO: Enviar a Google Sheets
-        fetch(scriptURL, {
-            method: "POST",
-            body: formData
-        })
-        .then(response => {
-            console.log("Datos enviados a Sheets");
-            
-            // 2. LUEGO: Abrir WhatsApp
+        // Crear iframe oculto si no existe
+        let iframe = document.getElementById("hidden_iframe");
+        if (!iframe) {
+            iframe = document.createElement("iframe");
+            iframe.id = "hidden_iframe";
+            iframe.name = "hidden_iframe";
+            iframe.style.display = "none";
+            document.body.appendChild(iframe);
+        }
+        
+        // Crear formulario temporal
+        const tempForm = document.createElement("form");
+        tempForm.action = scriptURL;
+        tempForm.method = "POST";
+        tempForm.target = "hidden_iframe";
+        
+        // Agregar campos
+        const fields = {nombre, email, telefono, mensaje};
+        for (let key in fields) {
+            const input = document.createElement("input");
+            input.type = "hidden";
+            input.name = key;
+            input.value = fields[key];
+            tempForm.appendChild(input);
+        }
+        
+        // Agregar al body y enviar
+        document.body.appendChild(tempForm);
+        tempForm.submit();
+        
+        // Limpiar formulario temporal
+        setTimeout(() => {
+            document.body.removeChild(tempForm);
+        }, 100);
+        
+        // Esperar 1 segundo y abrir WhatsApp
+        setTimeout(() => {
+            // Abrir WhatsApp
             const whatsappMessage = `Hola, soy ${nombre}. ${mensaje}`;
             const whatsappURL = `https://wa.me/51934859892?text=${encodeURIComponent(whatsappMessage)}`;
-            
-            // Abrir WhatsApp
             window.open(whatsappURL, "_blank");
             
             // Limpiar formulario
@@ -1060,22 +1082,10 @@
             // Mostrar mensaje de éxito
             alert("¡Mensaje enviado! Revisa WhatsApp.");
             
-        })
-        .catch(error => {
-            console.error("Error:", error);
-            
-            // Aunque haya error, abrir WhatsApp de todas formas
-            const whatsappMessage = `Hola, soy ${nombre}. ${mensaje}`;
-            const whatsappURL = `https://wa.me/51934859892?text=${encodeURIComponent(whatsappMessage)}`;
-            window.open(whatsappURL, "_blank");
-            
-            alert("Te hemos llevado a WhatsApp. Si deseas, guarda estos datos manualmente.");
-        })
-        .finally(() => {
             // Restaurar botón
             submitButton.textContent = originalText;
             submitButton.disabled = false;
-        });
+        }, 1000);
     });
     </script>
     <!-- ====== BOTÓN WHATSAPP FLOTANTE ====== -->
